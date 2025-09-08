@@ -14,7 +14,8 @@ except Exception as e:
     st.stop()
 
 # Initialize the Gemini model
-model = genai.GenerativeModel('gemini-pro')
+# The model 'gemini-pro' is deprecated, using 'gemini-1.5-pro' instead.
+model = genai.GenerativeModel('gemini-1.5-pro')
 
 # Set up the Streamlit app page
 st.set_page_config(
@@ -67,7 +68,7 @@ if uploaded_file is not None:
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 response = get_gemini_response(["Describe the image in detail.", image])
-                st.markdown(response)
+            st.markdown(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
 
     # Show conversation history
@@ -86,7 +87,7 @@ if uploaded_file is not None:
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 response = get_gemini_response([user_prompt, image])
-                st.markdown(response)
+            st.markdown(response)
 
         # Add assistant message to history
         st.session_state.messages.append({"role": "assistant", "content": response})
