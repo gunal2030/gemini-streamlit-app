@@ -62,7 +62,8 @@ if uploaded_file is not None:
 
     # Display the uploaded image
     image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Image", use_column_width=True)
+    # The corrected line is here
+    st.image(image, caption="Uploaded Image", use_container_width=True)
     
     # Add "What's in the picture?" button
     if st.button("What's in the picture?"):
@@ -99,3 +100,4 @@ if uploaded_file is not None:
         st.session_state.messages.append({"role": "assistant", "content": response})
 else:
     st.info("Please upload an image to begin.")
+
