@@ -5,16 +5,15 @@ import io
 import time
 
 # --- Configuration ---
-# Set your API key in Streamlit secrets
+# Use Streamlit's secrets management for the API key
 try:
     GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=GOOGLE_API_KEY)
 except Exception as e:
-    st.error(f"Failed to configure API key: {e}")
+    st.error(f"Failed to configure API key. Please ensure it's set in Streamlit secrets.")
     st.stop()
 
 # Initialize the Gemini model
-# The model 'gemini-pro' is deprecated, using 'gemini-1.5-pro' instead.
 model = genai.GenerativeModel('gemini-1.5-pro')
 
 # Set up the Streamlit app page
@@ -32,8 +31,13 @@ if "uploaded_image_name" not in st.session_state:
 
 # --- Helper Functions ---
 def get_gemini_response(prompt_parts):
+    """
+    Sends a prompt and image to the Gemini model and returns the response.
+    Includes a timing function to measure API response time.
+    """
     try:
         start_time = time.time()
+        # The generation logic is handled here
         response = model.generate_content(prompt_parts)
         end_time = time.time()
         st.sidebar.markdown(f"**Response Time:** {end_time - start_time:.2f} seconds")
@@ -46,11 +50,12 @@ with st.sidebar:
     st.header("Settings")
     temperature = st.slider("Temperature", 0.0, 1.0, 0.7)
     st.info("A higher temperature makes the answer more creative.")
+
 uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
 # --- Main App Logic ---
 if uploaded_file is not None:
-    # Check if a new image was uploaded
+    # Check if a new image was uploaded to clear history
     if st.session_state.uploaded_image_name != uploaded_file.name:
         st.session_state.uploaded_image_name = uploaded_file.name
         st.session_state.messages = []  # Clear history for new image
@@ -76,7 +81,7 @@ if uploaded_file is not None:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # Handle user input
+    # Handle user input for the chat
     if user_prompt := st.chat_input("Ask a question about the image..."):
         # Add user message to history
         st.session_state.messages.append({"role": "user", "content": user_prompt})
@@ -86,11 +91,11 @@ if uploaded_file is not None:
         # Get assistant's response
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
+                # Pass both the text prompt and the image to the model
                 response = get_gemini_response([user_prompt, image])
             st.markdown(response)
 
         # Add assistant message to history
         st.session_state.messages.append({"role": "assistant", "content": response})
-
 else:
     st.info("Please upload an image to begin.")
