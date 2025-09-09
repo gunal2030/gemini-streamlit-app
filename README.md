@@ -1,3 +1,5 @@
+Multi-modal Q&A with Gemini and Streamlit
+
 🚀 About the Project
 This project is a web application built using Streamlit that leverages the Google Gemini API to perform multi-modal question-answering. It allows users to upload an image and then ask questions about its content. The application demonstrates the power of the Gemini model to understand and reason across both visual and textual information in a single conversation. Key features include built-in rate limiting and image resizing to manage API quota usage efficiently.
 
